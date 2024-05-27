@@ -1,12 +1,34 @@
 ---
 title: "Executive Summary : Tekstil dan Produk Tekstil"
+author: "Fungsi Statistik Industri Besar dan Sedang, BPS"
+
 format: html
+execute:
+  echo: false
+  warning: false
+toc: true
 editor: visual
+
 ---
 
 ```{r}
-# Load data
+# Package
+library(readxl)
+library(dplyr)
 
+### Visualization----------------------------------------------------------
+library(ggplot2)
+library(ggthemes)
+library(scales)
+```
+
+```{r}
+# Load data economic indicators
+tpt_combine <- read_xlsx("D:/##AYUPA DESKTOP 2/TPT/tpt_combine.xlsx")
+tpt1721     <- read_xlsx("D:/##AYUPA DESKTOP 2/TPT/tp1721.xlsx")
+
+# Load data number establishments
+tpt_combine_est <- read_xlsx("D:/##AYUPA DESKTOP 2/TPT/tpt_combine_est.xlsx")
 ```
 
 
@@ -19,8 +41,28 @@ Isi kondisi umum industri TPT di Indonesia: share TPT dll
 
 Deskripsi tren jumlah perusahaan
 
-```{r}
-1 + 1
+```{r, warning=FALSE}
+### No. establishment----------------------------------------------------------
+# Each Categori label shown
+total_est <- tpt_combine_est %>%
+  group_by(year, name_isic2) %>%
+  summarise(total_est = n())        
+
+ggplot(total_est, aes(x = factor(year), y = total_est, fill = factor(name_isic2))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(total_est), 
+                y = total_est, group = name_isic2),
+            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
+  labs(title = "Jumlah Perusahaan",
+       x = "",
+       y = "",
+       fill = "Industri",
+       caption = "Sumber: Sensus Ekonomi (2016), STPIM (2017-2021), Updating DPA (2022-2023)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+
 ```
 
 
@@ -28,6 +70,281 @@ Deskripsi tren jumlah perusahaan
 
 Deskripsi tren tenaga kerja
 
-```{r}
-1 + 1
+```{r, warning=FALSE}
+### Labor----------------------------------------------------------
+# Each Categori label shown
+total_labor <- tpt_combine %>%
+  group_by(year, name_isic2) %>%
+  summarise(total_labor = sum(labor))   
+
+ggplot(total_labor, aes(x = factor(year), y = total_labor, fill = factor(name_isic2))) +
+         geom_bar(stat = "identity", position = "stack") +
+         geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(total_labor), 
+                       y = total_labor, group = name_isic2),
+                   position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
+         labs(title = "Total Pekerja",
+              x = "",
+              y = "",
+              fill = "Industri",
+              caption = "Sumber: Sensus Ekonomi (2016), STPIM (2017-2021)") +
+         theme_pander() +
+         scale_fill_economist() +
+         scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
 ```
+
+## Output
+
+Deskripsi tren output
+
+```{r, warning=FALSE}
+### Output----------------------------------------------------------
+# Each Categori label shown
+total_output <- tpt_combine %>%
+  group_by(year, name_isic2) %>%
+  summarise(total_output = round(sum(total_output)/1e+6),)        # per billion
+
+ggplot(total_output, aes(x = factor(year), y = total_output, fill = factor(name_isic2))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(total_output), 
+                y = total_output, group = name_isic2),
+            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
+  labs(title = "Total Output",
+       x = "",
+       y = "miliar Rupiah",
+       fill = "Industri",
+       caption = "Sumber: Sensus Ekonomi (2016), STPIM (2017-2021)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+```
+
+### Struktur output tekstil
+
+```{r, warning=FALSE}
+### Output structure (prod_goods, prod_serv & oth) ----------------------------------------------------------
+# Each Categori label shown
+total_outputstr <- tpt1721 %>%
+  group_by(year, name_isic2) %>%
+  summarise(total_prodgoods = round(sum(prod_goods)/1e+6),     # per billion
+            total_prodserv = round(sum(prod_serv)/1e+6),     # per billion
+            total_outp = round(sum(total_output)/1e+6),
+            total_outputoth = total_outp - (total_prodgoods + total_prodserv))    # per billion
+
+# Reshape  
+total_outputstr1 <- reshape2::melt(total_outputstr, id.vars = c("year", "name_isic2"))
+# Filter ISIC2 = 13
+total_outputstr1_13 <- total_outputstr1 %>%
+  filter(name_isic2 == "Tekstil") %>%
+  filter(variable != "total_outp") %>%
+  mutate(variable = case_when(
+    variable == "total_prodgoods" ~ "Produksi barang",
+    variable == "total_prodserv" ~ "Maklun/jasa",
+    variable == "total_outputoth" ~ "Lainnya",
+    TRUE ~ variable
+  ))
+total_outputstr1_13$variable <- factor(total_outputstr1_13$variable, levels = c("Produksi barang", "Maklun/jasa", "Lainnya"))
+
+
+# Filter ISIC2 =14
+total_outputstr1_14 <- total_outputstr1 %>%
+  filter(name_isic2 == "Pakaian Jadi") %>%
+  filter(variable != "total_outp") %>%
+  mutate(variable = case_when(
+  variable == "total_prodgoods" ~ "Produksi barang",
+  variable == "total_prodserv" ~ "Maklun/jasa",
+  variable == "total_outputoth" ~ "Lainnya",
+  TRUE ~ variable
+))
+total_outputstr1_14$variable <- factor(total_outputstr1_14$variable, levels = c("Produksi barang", "Maklun/jasa", "Lainnya"))
+
+
+# Struktur Output Tekstil
+ggplot(total_outputstr1_13, aes(x = year, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(value), 
+                y = value),
+            position = position_stack(vjust = 0.5), color = "white", size = 3) +  # Add labels for the sum of labor
+  labs(title = "Struktur Output Industri Tekstil",
+       x = "",
+       y = "miliar Rupiah",
+       fill = "",
+       caption = "Sumber: STPIM (2017-2021)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+```
+
+### Struktur output pakaian jadi
+```{r, warning=FALSE}
+# Struktur Output Pakaian Jadi
+ggplot(total_outputstr1_14, aes(x = year, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(value), 
+                y = value),
+            position = position_stack(vjust = 0.5), color = "white", size = 3) +  # Add labels for the sum of labor
+  labs(title = "Struktur Output Industri Pakaian Jadi",
+       x = "",
+       y = "miliar Rupiah",
+       fill = "",
+       caption = "Sumber: STPIM (2017-2021)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+```
+
+## Input
+
+Deskripsi tren input
+
+```{r, warning=FALSE}
+### Input ----------------------------------------------------------
+# Each Categori label shown
+total_input <- tpt_combine %>%
+  group_by(year, name_isic2) %>%
+  summarise(total_input = round(sum(total_input)/1e+6),)        # per billion
+
+ggplot(total_input, aes(x = factor(year), y = total_input, fill = factor(name_isic2))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(total_input), 
+                y = total_input, group = name_isic2),
+            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
+  labs(title = "Total Input",
+       x = "",
+       y = "miliar Rupiah",
+       fill = "Industri",
+       caption = "Sumber: Sensus Ekonomi (2016), STPIM (2017-2021)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+```
+
+### Struktur input tekstil
+```{r, warning=FALSE}
+### Input structure (wage_prod, wage_othr, raw_material_dom, raw_material_imp, & oth) ----------------------------------------------------------
+# Each Categori label shown
+total_inputstr <- tpt1721 %>%
+  group_by(year, name_isic2) %>%
+  summarise(total_wage = round(sum(wage_prod)/1e+6) + round(sum(wage_othr)/1e+6),        # per billion
+            total_rawdom = round(sum(raw_material_dom)/1e+6),   # per billion
+            total_rawimp = round(sum(raw_material_imp)/1e+6),   # per billion
+            total_inp = round(sum(total_input)/1e+6),           # per billion
+            total_inputoth = total_inp - (total_rawdom + total_rawimp))    # per billion
+
+# Reshape  
+total_inputstr1 <- reshape2::melt(total_inputstr, id.vars = c("year", "name_isic2"))
+
+# Filter ISIC2 = 13
+total_inputstr1_13 <- total_inputstr1 %>%
+  filter(name_isic2 == "Tekstil") %>%
+  filter(variable != "total_inp") %>%
+  mutate(variable = case_when(
+    variable == "total_wage" ~ "Upah pekerja",
+    variable == "total_rawdom"   ~ "Bahan baku lokal",
+    variable == "total_rawimp"   ~ "Bahan baku impor",
+    variable == "total_inputoth"   ~ "Input lainnya",
+    TRUE ~ variable
+  ))
+total_inputstr1_13$variable <- factor(total_inputstr1_13$variable, levels = c("Upah pekerja", "Bahan baku lokal", 
+                                                                              "Bahan baku impor", "Input lainnya"))
+
+
+# Filter ISIC2 =14
+total_inputstr1_14 <- total_inputstr1 %>%
+  filter(name_isic2 == "Pakaian Jadi") %>%
+  filter(variable != "total_inp") %>%
+  mutate(variable = case_when(
+    variable == "total_wage"     ~ "Upah pekerja",
+    variable == "total_rawdom"   ~ "Bahan baku lokal",
+    variable == "total_rawimp"   ~ "Bahan baku impor",
+    variable == "total_inputoth"   ~ "Input lainnya",
+    TRUE ~ variable
+  ))
+total_inputstr1_14$variable <- factor(total_inputstr1_14$variable, levels = c("Upah pekerja", "Bahan baku lokal", 
+                                                                              "Bahan baku impor", "Input lainnya"))
+
+
+# Struktur Input Tekstil
+ggplot(total_inputstr1_13, aes(x = year, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(value), 
+                y = value),
+            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
+  labs(title = "Struktur Upah dan Input Industri Tekstil",
+       x = "",
+       y = "miliar Rupiah",
+       fill = "",
+       caption = "Sumber: STPIM (2017-2021)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+```
+
+### Struktur input pakaian jadi
+```{r, warning=FALSE}
+# Struktur Output Pakaian Jadi
+ggplot(total_inputstr1_14, aes(x = year, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(value), 
+                y = value),
+            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
+  labs(title = "Struktur Upah dan Input Industri Pakaian Jadi",
+       x = "",
+       y = "miliar Rupiah",
+       fill = "",
+       caption = "Sumber: STPIM (2017-2021)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+```
+
+### Proporsi upah dan input tekstil
+```{r, warning=FALSE}
+### Proporsi Upah dan Input ----------------------------------------------------------
+input21_prop_13 <- total_inputstr1[total_inputstr1$year == 2021 
+                                   & total_inputstr1$name_isic2 == "Tekstil", ]
+
+# Calculate prop
+input21_prop_13$prop <- NA  
+# Find indices of relevant variables
+compo_index <- which(input21_prop_13$variable %in% c("total_wage", "total_rawdom", "total_rawimp", "total_inputoth"))
+total_index <- which(input21_prop_13$variable == "total_inp")
+
+# Calculate prop for relevant rows
+input21_prop_13$prop[compo_index] <- round((input21_prop_13$value[compo_index] / (input21_prop_13$value[total_index] + input21_prop_13$value[which(input21_prop_13$variable == "total_wage")]) * 100), 2)
+
+# Change legend
+input21_prop_13$variable <- ifelse(input21_prop_13$variable == "total_wage", "Upah pekerja",
+                                   ifelse(input21_prop_13$variable == "total_rawdom", "Bahan baku lokal",
+                                          ifelse(input21_prop_13$variable == "total_rawimp", "Bahan baku impor",
+                                                 ifelse(input21_prop_13$variable == "total_inputoth", "Input lainnya",
+                                                        ifelse(input21_prop_13$variable == "total_inp", "Total input",
+                                                               input21_prop_13$variable)))))
+
+order_inputcompo <- c("Upah pekerja", "Bahan baku lokal", "Bahan baku impor", "Input lainnya")
+input21_prop_13$variable <- factor(input21_prop_13$variable, levels = order_inputcompo)  #Reorder custom label
+
+# Create a pie chart 
+ggplot(input21_prop_13, aes(x = "", y = prop, fill = variable)) +
+  geom_col() +
+  geom_text(aes(label = paste0(prop, "%")),
+            position = position_stack(vjust = 0.6),
+            col = "white") +
+  coord_polar(theta = "y", direction = -1) + 
+  scale_fill_economist() +
+  theme_void() +
+  theme(plot.title = element_text(size = 13),  
+        legend.position = "bottom",           
+        legend.box = "horizontal") +
+  labs(title = "Proporsi Struktur Upah dan Input Industri Tekstil",
+       fill = "",
+       caption = "Source: STPIM 2021") 
+
+```
+
