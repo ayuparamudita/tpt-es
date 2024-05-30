@@ -1,6 +1,6 @@
 ---
-title: "Statistik Industri Tekstil dan Produk Tekstil"
-author: "Fungsi Statistik Industri Besar dan Sedang, BPS"
+title: "_Executive Summary_: Statistik Industri Tekstil dan Pakaian Jadi"
+author: "Statistisi di Statistik Industri Besar dan Sedang, BPS"
 
 format: html
 execute:
@@ -11,7 +11,13 @@ editor: visual
 
 ---
 
-::: {.justify}
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
 
 ```{r, warning=FALSE}
 # Package
@@ -36,7 +42,7 @@ tpt_combine_est <- read_xlsx("D:/##AYUPA DESKTOP 2/TPT/tpt_combine_est.xlsx")
 
 ## Pendahuluan
 
-Industri tekstil dan produk tekstil (TPT) merupakan salah satu sektor unggulan dalam perekonomian Indonesia. Sektor ini tidak hanya menjadi tulang punggung ekspor non-migas, tetapi juga berperan penting dalam penyerapan tenaga kerja dan pertumbuhan industri dalam negeri, di mana industri TPT menyumbang 4,88 persen dalam struktur industri manufaktur nasional. Sebagai negara dengan populasi yang besar dan tenaga kerja yang kompetitif, Indonesia memiliki potensi besar untuk terus mengembangkan industri TPT.
+Industri tekstil dan produk tekstil (TPT) merupakan salah satu sektor unggulan dalam perekonomian Indonesia. Sektor ini tidak hanya menjadi tulang punggung ekspor non-migas, tetapi juga berperan penting dalam penyerapan tenaga kerja dan pertumbuhan industri dalam negeri, di mana industri TPT menyumbang sekitar 4,88 persen terhadap kinerja industri manufaktur nasional. Sebagai negara dengan populasi yang besar dan tenaga kerja yang kompetitif, Indonesia memiliki potensi besar untuk terus mengembangkan industri TPT.
 
 Dalam beberapa tahun terakhir, industri TPT Indonesia telah mengalami dinamika tantangan baik lokal maupun global, khususnya di sisi produksi, tenaga kerja, hingga bahan baku. Oleh karena itu, analisis deskriptif tren industri TPT sangat penting untuk memahami kondisi industri ini dalam beberapa tahun terakhir.
 
@@ -47,10 +53,10 @@ Dalam _executive summary_ ini, kami akan menyajikan gambaran umum mengenai perfo
 
 ## _Disclaimer_:
 
-* Industri TPT meliputi kategori C (Industri Pengolahan) golongan pokok 13 (industri tekstil) dan golongan pokok 14 (industri pakaian jadi) dalam Klasifikasi Baku Lapangan Usaha Indonesia (KBLI).
-* Sumber data yang digunakan merupakan gabungan dari hasil _Updating_ Direktori (DPA) dan Survei Tahunan Perusahaan Industri Manufaktur (STPIM) yang dilakukan setiap tahun dengan target responden adalah perusahaan berskala besar dan sedang.
+* Industri tekstil dan produk tekstil (TPT) mencakup kategori C (Industri Pengolahan) golongan pokok 13 __industri tekstil__ dan golongan pokok 14 __industri pakaian jadi__ dalam Klasifikasi Baku Lapangan Usaha Indonesia (KBLI).
+* Sumber data yang digunakan merupakan gabungan dari hasil _Updating_ Direktori (DPA) dan Survei Tahunan Perusahaan Industri Manufaktur (STPIM) yang dilakukan setiap tahun. Target responden survei adalah perusahaan __berskala besar dan sedang__.
 * Klasifikasi usaha berdasarkan tenaga kerja: usaha dengan jumlah tenaga kerja 20-99 orang diklasifikasikan sebagai skala besar, sedangkan usaha dengan jumlah tenaga kerja lebih dari 99 orang diklasifikasikan sebagai  skala sedang.
-* Publikasi lengkap dapat dilihat di [www.bps.go.id](www.bps.go.id)
+* Publikasi lengkap dapat dilihat di __[www.bps.go.id](www.bps.go.id)__
 
 :::
 
@@ -124,7 +130,7 @@ ggplot(total_labor, aes(x = factor(year), y = total, fill = factor(name_isic2)))
          geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(total), 
                        y = total, group = name_isic2),
                    position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
-         labs(title = "Total Pekerja",
+         labs(title = "Total Tenaga Kerja",
               x = "",
               y = "",
               fill = "Industri",
@@ -172,7 +178,7 @@ ggplot(total_output, aes(x = factor(year), y = total, fill = factor(name_isic2))
 
 ```
 
-### Struktur output tekstil
+### Struktur output industri tekstil
 
 ```{r, warning=FALSE}
 ### Output structure (prod_goods, prod_serv & oth) ----------------------------------------------------------
@@ -254,7 +260,7 @@ ggplot(total_outputstr1_13, aes(x = year, y = value, fill = variable)) +
 Pada __industri pakaian jadi__, perubahan struktur output terlihat pada grafik di bawah. Pada tahun 2017, komposisi output industri pakaian jadi didominasi oleh nilai maklun/jasa, di mana nilainya sedikit lebih besar dibandingkan nilai produksi barang. Pada periode selanjutnya, tercatat nilai produksi barang berkontribusi signifikan dalam struktur output industri pakaian jadi. _Nilai produksi pakaian jadi_ mencapai _`r prod14_2021`_ pada tahun 2021, sementara _nilai maklun/jasa_ tercatat sebesar _`r serv14_2021`_ dan _pendapatan lain_ sebesar _`r othout14_2021`_.
 
 
-### Struktur output pakaian jadi
+### Struktur output industri pakaian jadi
 ```{r, warning=FALSE}
 # Struktur Output Pakaian Jadi
 ggplot(total_outputstr1_14, aes(x = year, y = value, fill = variable)) +
@@ -451,13 +457,13 @@ ggplot(input21_prop_13, aes(x = "", y = prop, fill = variable)) +
   theme(plot.title = element_text(size = 13),  
         legend.position = "bottom",           
         legend.box = "horizontal") +
-  labs(title = "Proporsi Struktur Upah dan Input Industri Tekstil",
+  labs(title = "Proporsi Struktur Input Industri Tekstil",
        fill = "",
        caption = "Source: STPIM 2021") 
 
 ```
 
-### Struktur input pakaian jadi
+### Struktur input industri pakaian jadi
 
 ```{r, warning=FALSE}
 ### Proporsi upah dan input pakaian jadi
@@ -531,7 +537,7 @@ ggplot(input21_prop_14, aes(x = "", y = prop, fill = variable)) +
   theme(plot.title = element_text(size = 13),  
         legend.position = "bottom",           
         legend.box = "horizontal") +
-  labs(title = "Proporsi Struktur Upah dan Input Industri Pakaian Jadi",
+  labs(title = "Proporsi Struktur Input Industri Pakaian Jadi",
        fill = "",
        caption = "Source: STPIM 2021") 
 
@@ -540,5 +546,3 @@ ggplot(input21_prop_14, aes(x = "", y = prop, fill = variable)) +
 ```{r, warning=FALSE}
 #TAMBAHKAN ANALISIS TERKAIT DAMPAK COVID!!! >> Tenaga Kerja
 ```
-
-:::
