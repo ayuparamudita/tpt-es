@@ -1,5 +1,5 @@
 ---
-title: "Executive Summary : Tekstil dan Produk Tekstil"
+title: "Statistik Industri Tekstil dan Produk Tekstil"
 author: "Fungsi Statistik Industri Besar dan Sedang, BPS"
 
 format: html
@@ -10,6 +10,8 @@ toc: true
 editor: visual
 
 ---
+
+::: {.justify}
 
 ```{r, warning=FALSE}
 # Package
@@ -34,7 +36,23 @@ tpt_combine_est <- read_xlsx("D:/##AYUPA DESKTOP 2/TPT/tpt_combine_est.xlsx")
 
 ## Pendahuluan
 
-Isi kondisi umum industri TPT di Indonesia: share TPT dll
+Industri tekstil dan produk tekstil (TPT) merupakan salah satu sektor unggulan dalam perekonomian Indonesia. Sektor ini tidak hanya menjadi tulang punggung ekspor non-migas, tetapi juga berperan penting dalam penyerapan tenaga kerja dan pertumbuhan industri dalam negeri, di mana industri TPT menyumbang 4,88 persen dalam struktur industri manufaktur nasional. Sebagai negara dengan populasi yang besar dan tenaga kerja yang kompetitif, Indonesia memiliki potensi besar untuk terus mengembangkan industri TPT.
+
+Dalam beberapa tahun terakhir, industri TPT Indonesia telah mengalami dinamika tantangan baik lokal maupun global, khususnya di sisi produksi, tenaga kerja, hingga bahan baku. Oleh karena itu, analisis deskriptif tren industri TPT sangat penting untuk memahami kondisi industri ini dalam beberapa tahun terakhir.
+
+Dalam _executive summary_ ini, kami akan menyajikan gambaran umum mengenai performa industri TPT Indonesia, meliputi data jumlah perusahaan, tenaga kerja, output dan strukturnya, input dan strukturnya, serta isu-isu terkait yang mempengaruhi sektor ini. Harapannya, informasi ini dapat menjadi acuan bagi para pemangku kepentingan dalam mengambil keputusan strategis untuk meningkatkan daya saing dan keberlanjutan industri TPT di Indonesia.
+
+
+::: {.callout-caution appearance="simple"}
+
+## _Disclaimer_:
+
+* Industri TPT meliputi kategori C (Industri Pengolahan) golongan pokok 13 (industri tekstil) dan golongan pokok 14 (industri pakaian jadi) dalam Klasifikasi Baku Lapangan Usaha Indonesia (KBLI).
+* Sumber data yang digunakan merupakan gabungan dari hasil _Updating_ Direktori (DPA) dan Survei Tahunan Perusahaan Industri Manufaktur (STPIM) yang dilakukan setiap tahun dengan target responden adalah perusahaan berskala besar dan sedang.
+* Klasifikasi usaha berdasarkan tenaga kerja: usaha dengan jumlah tenaga kerja 20-99 orang diklasifikasikan sebagai skala besar, sedangkan usaha dengan jumlah tenaga kerja lebih dari 99 orang diklasifikasikan sebagai  skala sedang.
+* Publikasi lengkap dapat dilihat di [www.bps.go.id](www.bps.go.id)
+
+:::
 
 
 ## Jumlah perusahaan
@@ -97,10 +115,6 @@ labor14_2021 <- format(total_labor$total[total_labor$year == 2021 & total_labor$
 
 
 Tren tenaga kerja di industri TPT cenderung mengalami penurunan beberapa tahun ke belakang. Pada tahun 2021, industri tekstil menyerap _`r labor13_2021`_ tenaga kerja. Sementara tenaga kerja pada industri pakaian jadi mencapai _`r labor14_2021`_ orang pada periode yang sama.
-
-```{r, warning=FALSE}
-#TAMBAHKAN ANALISIS TERKAIT DAMPAK COVID!!!
-```
 
 
 ```{r, warning=FALSE}
@@ -259,12 +273,16 @@ ggplot(total_outputstr1_14, aes(x = year, y = value, fill = variable)) +
 
 ```
 
-## Pengeluaran untuk upah dan input
+## Input
 
-```{r, warning=FALSE}
-#KASIH WARNING INPUT termasuk pengeluaran untuk upah!!
-#Lalu edit deskripsi
-```
+::: {.callout-note appearance="simple"}
+
+## Catatan:
+
+Input meliputi pengeluaran upah untuk tenaga kerja, bahan baku lokal dan impor, serta pengeluaran untuk input lainnya yang dikeluarkan oleh perusahaan.
+
+:::
+
 
 ```{r, warning=FALSE}
 ### Input ----------------------------------------------------------
@@ -282,7 +300,7 @@ input14_2021 <- format(total_input$total[total_input$year == 2021 & total_input$
 ```
 
 
-Total pengeluaran untuk upah pekerja dan input produksi industri TPT berfluktuasi sepanjang 2016-2021. Total pengeluaran upah dan input industri TPT tertinggi terjadi pada tahun 2019, di mana nilainya mencapai _`r input1314_2019`_. Pada tahun 2021, total pengeluaran upah dan input pada _industri tekstil_ mengalami penurunan dari beberapa tahun sebelumnya menjadi _`r input13_2021`_. Sebaliknya, total pengeluaran upah dan input _industri pakaian jadi_ meningkat menjadi _`r input14_2021`_ di tahun 2021.
+Total pengeluaran untuk input produksi industri TPT berfluktuasi sepanjang 2016-2021. Total pengeluaran input industri TPT tertinggi terjadi pada tahun 2019, di mana nilainya mencapai _`r input1314_2019`_. Pada tahun 2021, nilai input pada _industri tekstil_ mengalami penurunan dari beberapa tahun sebelumnya menjadi _`r input13_2021`_. Sebaliknya, nilai input _industri pakaian jadi_ meningkat menjadi _`r input14_2021`_ di tahun 2021.
 
 
 ```{r, warning=FALSE}
@@ -292,7 +310,7 @@ ggplot(total_input, aes(x = factor(year), y = total, fill = factor(name_isic2)))
   geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(total), 
                 y = total, group = name_isic2),
             position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
-  labs(title = "Total Pengeluaran untuk Upah dan Input",
+  labs(title = "Total Input",
        x = "",
        y = "miliar Rupiah",
        fill = "Industri",
@@ -304,7 +322,8 @@ ggplot(total_input, aes(x = factor(year), y = total, fill = factor(name_isic2)))
 ```
 
 
-### Struktur input tekstil
+### Struktur input industri tekstil
+
 ```{r, warning=FALSE}
 ### Input structure (wage_prod, wage_othr, raw_material_dom, raw_material_imp, & oth) ----------------------------------------------------------
 # Each Categori label shown
@@ -349,44 +368,21 @@ total_inputstr1_14$variable <- factor(total_inputstr1_14$variable, levels = c("U
                                                                               "Bahan baku impor", "Input lainnya"))
 
 
-# Struktur Input Tekstil
-ggplot(total_inputstr1_13, aes(x = year, y = value, fill = variable)) +
-  geom_bar(stat = "identity", position = "stack") +
-  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(value), 
-                y = value),
-            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
-  labs(title = "Struktur Upah dan Input Industri Tekstil",
-       x = "",
-       y = "miliar Rupiah",
-       fill = "",
-       caption = "Sumber: STPIM (2017-2021)") +
-  theme_pander() +
-  scale_fill_economist() +
-  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+bbdom13_2021 <- format(total_inputstr1_13$value[total_inputstr1_13$year == 2021 & total_inputstr1_13$variable == 'Bahan baku lokal'], big.mark = ".")
+
+bbimp13_2021 <- format(total_inputstr1_13$value[total_inputstr1_13$year == 2021 & total_inputstr1_13$variable == 'Bahan baku impor'], big.mark = ".")
+
+bbdom14_2021 <- format(total_inputstr1_14$value[total_inputstr1_14$year == 2021 & total_inputstr1_14$variable == 'Bahan baku lokal'], big.mark = ".")
+
+bbimp14_2021 <- format(total_inputstr1_14$value[total_inputstr1_14$year == 2021 & total_inputstr1_14$variable == 'Bahan baku impor'], big.mark = ".")
+
+bbimp14_2017 <- format(total_inputstr1_14$value[total_inputstr1_14$year == 2017 & total_inputstr1_14$variable == 'Bahan baku impor'], big.mark = ".")
 
 ```
 
-### Struktur input pakaian jadi
 ```{r, warning=FALSE}
-# Struktur Output Pakaian Jadi
-ggplot(total_inputstr1_14, aes(x = year, y = value, fill = variable)) +
-  geom_bar(stat = "identity", position = "stack") +
-  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(value), 
-                y = value),
-            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
-  labs(title = "Struktur Upah dan Input Industri Pakaian Jadi",
-       x = "",
-       y = "miliar Rupiah",
-       fill = "",
-       caption = "Sumber: STPIM (2017-2021)") +
-  theme_pander() +
-  scale_fill_economist() +
-  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
-
-```
-
 ### Proporsi upah dan input tekstil
-```{r, warning=FALSE}
+
 ### Proporsi Upah dan Input ----------------------------------------------------------
 input21_prop_13 <- total_inputstr1[total_inputstr1$year == 2021 
                                    & total_inputstr1$name_isic2 == "Tekstil", ]
@@ -411,6 +407,38 @@ input21_prop_13$variable <- ifelse(input21_prop_13$variable == "total_wage", "Up
 order_inputcompo <- c("Upah pekerja", "Bahan baku lokal", "Bahan baku impor", "Input lainnya")
 input21_prop_13$variable <- factor(input21_prop_13$variable, levels = order_inputcompo)  #Reorder custom label
 
+
+pbbdom13_2021 <- format(input21_prop_13$prop[input21_prop_13$variable == 'Bahan baku lokal' & !is.na(input21_prop_13$prop)], big.mark = ",")
+
+pbbimp13_2021 <- format(input21_prop_13$prop[input21_prop_13$variable == 'Bahan baku impor' & !is.na(input21_prop_13$prop)], big.mark = ",")
+
+```
+
+
+Struktur input industri tekstil rata-rata didominasi oleh pengeluaran untuk bahan baku. Sepanjang 2017-2021, tidak ada indikasi bahwa bahan baku impor mendominasi struktur input industri tekstil. Sebaliknya, bahan baku lokal memiliki kontribusi yang lebih besar dibandingkan bahan baku impor di dalam komposisi input industri ini. Pada tahun 2021, nilai pengeluaran untuk bahan baku lokal mencapai _`r pbbdom13_2021`_ persen dari total nilai input atau sebesar _`r bbdom13_2021`_ miliar Rupiah. Sementara, pengeluaran bahan baku impor sebesar _`r pbbimp13_2021`_ persen atau _`r bbimp13_2021`_ miliar Rupiah.
+
+
+```{r, warning=FALSE}
+# Struktur Input Tekstil
+ggplot(total_inputstr1_13, aes(x = year, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(value), 
+                y = value),
+            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
+  labs(title = "Struktur Input Industri Tekstil",
+       x = "",
+       y = "miliar Rupiah",
+       fill = "",
+       caption = "Sumber: STPIM (2017-2021)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+```
+
+```{r, warning=FALSE}
+### ### Proporsi upah dan input tekstil ----------------------------------------------------------
+
 # Create a pie chart 
 ggplot(input21_prop_13, aes(x = "", y = prop, fill = variable)) +
   geom_col() +
@@ -429,3 +457,88 @@ ggplot(input21_prop_13, aes(x = "", y = prop, fill = variable)) +
 
 ```
 
+### Struktur input pakaian jadi
+
+```{r, warning=FALSE}
+### Proporsi upah dan input pakaian jadi
+
+### Proporsi Upah dan Input ----------------------------------------------------------
+input21_prop_14 <- total_inputstr1[total_inputstr1$year == 2021 
+                                   & total_inputstr1$name_isic2 == "Pakaian Jadi", ]
+
+# Calculate prop
+input21_prop_14$prop <- NA  
+# Find indices of relevant variables
+compo_index <- which(input21_prop_14$variable %in% c("total_wage", "total_rawdom", "total_rawimp", "total_inputoth"))
+total_index <- which(input21_prop_14$variable == "total_inp")
+
+# Calculate prop for relevant rows
+input21_prop_14$prop[compo_index] <- round((input21_prop_14$value[compo_index] / (input21_prop_14$value[total_index] + input21_prop_14$value[which(input21_prop_14$variable == "total_wage")]) * 100), 2)
+
+# Change legend
+input21_prop_14$variable <- ifelse(input21_prop_14$variable == "total_wage", "Upah pekerja",
+                                   ifelse(input21_prop_14$variable == "total_rawdom", "Bahan baku lokal",
+                                          ifelse(input21_prop_14$variable == "total_rawimp", "Bahan baku impor",
+                                                 ifelse(input21_prop_14$variable == "total_inputoth", "Input lainnya",
+                                                        ifelse(input21_prop_14$variable == "total_inp", "Total input",
+                                                               input21_prop_14$variable)))))
+
+order_inputcompo <- c("Upah pekerja", "Bahan baku lokal", "Bahan baku impor", "Input lainnya")
+input21_prop_14$variable <- factor(input21_prop_14$variable, levels = order_inputcompo)  #Reorder custom label
+
+
+pbbdom14_2021 <- format(input21_prop_14$prop[input21_prop_14$variable == 'Bahan baku lokal' & !is.na(input21_prop_14$prop)], big.mark = ",")
+
+pbbimp14_2021 <- format(input21_prop_14$prop[input21_prop_14$variable == 'Bahan baku impor' & !is.na(input21_prop_14$prop)], big.mark = ",")
+
+```
+
+
+Perubahan komposisi input __industri pakaian jadi__ cukup dinamis sepanjang 2017-2021. Pelemahan kinerja industri tekstil dalam beberapa tahun terakhir disinyalir berpengaruh terhadap pasokan bahan baku lokal pada industri lanjutannya, yaitu industri pakaian jadi. Nilai pengeluaran untuk bahan baku impor meningkat tajam dari _`r bbimp14_2017`_ miliar Rupiah pada tahun 2017 menjadi _`r bbimp14_2021`_ miliar Rupiah pada tahun 2021 atau _`r pbbimp14_2021`_ persen dari total nilai input industri pakaian jadi. Sementara itu, pengeluaran bahan baku lokal hanya berkontribusi _`r pbbdom14_2021`_ persen atau sebesar _`r bbdom14_2021`_ miliar Rupiah.
+
+
+```{r, warning=FALSE}
+# Struktur Output Pakaian Jadi
+ggplot(total_inputstr1_14, aes(x = year, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)(value), 
+                y = value),
+            position = position_stack(vjust = 0.5), color = "white") +  # Add labels for the sum of labor
+  labs(title = "Struktur Input Industri Pakaian Jadi",
+       x = "",
+       y = "miliar Rupiah",
+       fill = "",
+       caption = "Sumber: STPIM (2017-2021)") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+```
+
+
+```{r, warning=FALSE}
+### ### Proporsi upah dan input tekstil ----------------------------------------------------------
+
+# Create a pie chart 
+ggplot(input21_prop_14, aes(x = "", y = prop, fill = variable)) +
+  geom_col() +
+  geom_text(aes(label = paste0(prop, "%")),
+            position = position_stack(vjust = 0.6),
+            col = "white") +
+  coord_polar(theta = "y", direction = -1) + 
+  scale_fill_economist() +
+  theme_void() +
+  theme(plot.title = element_text(size = 13),  
+        legend.position = "bottom",           
+        legend.box = "horizontal") +
+  labs(title = "Proporsi Struktur Upah dan Input Industri Pakaian Jadi",
+       fill = "",
+       caption = "Source: STPIM 2021") 
+
+```
+
+```{r, warning=FALSE}
+#TAMBAHKAN ANALISIS TERKAIT DAMPAK COVID!!! >> Tenaga Kerja
+```
+
+:::
