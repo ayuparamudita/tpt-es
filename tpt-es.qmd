@@ -1,7 +1,8 @@
 ---
 title: "_Executive Summary_: Statistik Industri Tekstil dan Pakaian Jadi"
 author: "Statistisi di Statistik Industri Besar dan Sedang, BPS"
-date: "`r format(Sys.time(), '%d, %Y')`"
+date: "`r format(Sys.Date(), '%d %m %Y')`"
+date-format: iso
 
 format: html
 execute:
@@ -463,7 +464,7 @@ ggplot(input21_prop_13, aes(x = "", y = prop, fill = variable)) +
         legend.box = "horizontal") +
   labs(title = "Proporsi Struktur Input Industri Tekstil",
        fill = "",
-       caption = "Source: STPIM 2021") 
+       caption = "Sumber: STPIM 2021") 
 
 ```
 
@@ -543,7 +544,7 @@ ggplot(input21_prop_14, aes(x = "", y = prop, fill = variable)) +
         legend.box = "horizontal") +
   labs(title = "Proporsi Struktur Input Industri Pakaian Jadi",
        fill = "",
-       caption = "Source: STPIM 2021") 
+       caption = "Sumber: STPIM 2021") 
 
 ```
 
