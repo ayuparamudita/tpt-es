@@ -549,5 +549,7 @@ ggplot(input21_prop_14, aes(x = "", y = prop, fill = variable)) +
 ```
 
 ```{r, warning=FALSE}
-#TAMBAHKAN ANALISIS TERKAIT DAMPAK COVID!!! >> Tenaga Kerja
+#TAMBAHKAN ANALISIS TERKAIT DAMPAK COVID!!! >> Tenaga Kerja 
+
+
 ```
