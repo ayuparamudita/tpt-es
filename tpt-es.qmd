@@ -1,6 +1,7 @@
 ---
 title: "_Executive Summary_: Statistik Industri Tekstil dan Pakaian Jadi"
 author: "Statistisi di Statistik Industri Besar dan Sedang, BPS"
+date: "`r format(Sys.time(), '%d, %Y')`"
 
 format: html
 execute:
@@ -12,7 +13,6 @@ editor: visual
 ---
 
 ```{css}
-#| echo: false
 p {
   text-align: justify
 }
@@ -81,7 +81,7 @@ n14_2021 <- format(total_est$total[total_est$year == 2021 & total_est$isic2 == 1
 ```
 
 
-Jumlah perusahaan dalam industri Tekstil, Pakaian, dan Tekstil (TPT) mengalami penurunan tren sepanjang 2016-2021. Namun, pada tahun 2023, terdapat sedikit peningkatan jumlah perusahaan _industri tekstil_ dibandingkan dengan dua tahun sebelumnya. Pada tahun 2023, jumlah perusahaan industri tekstil mencapai _`r n13_2023`_, naik dari `r n13_2021` perusahaan pada tahun 2021. Sementara itu, jumlah perusahaan _industri pakaian jadi_ juga sedikit meningkat, `r n14_2021` perusahaan pada tahun 2021 menjadi _`r n14_2023`_ perusahaan pada tahun 2023.
+Jumlah perusahaan dalam industri Tekstil, Pakaian, dan Tekstil (TPT) mengalami penurunan tren sepanjang 2016-2021. Namun, pada tahun 2023, terdapat sedikit peningkatan jumlah perusahaan _industri tekstil_ dibandingkan dengan dua tahun sebelumnya. Pada tahun 2023, jumlah perusahaan industri tekstil mencapai _`r n13_2023`_ perusahaan, naik dari `r n13_2021` perusahaan pada tahun 2021. Sementara itu, jumlah perusahaan _industri pakaian jadi_ juga sedikit meningkat, `r n14_2021` perusahaan pada tahun 2021 menjadi _`r n14_2023`_ perusahaan pada tahun 2023.
 
 
 ```{r, warning=FALSE}
@@ -230,6 +230,10 @@ serv14_2021 <- format(total_outputstr1_14$value[total_outputstr1_14$year == 2021
 
 othout14_2021 <- format(total_outputstr1_14$value[total_outputstr1_14$year == 2021 & total_outputstr1_14$variable == 'Lainnya'], big.mark = ".")
 
+prod14_2017 <- format(total_outputstr1_14$value[total_outputstr1_14$year == 2017 & total_outputstr1_14$variable == 'Produksi barang'], big.mark = ".")
+
+serv14_2017 <- format(total_outputstr1_14$value[total_outputstr1_14$year == 2017 & total_outputstr1_14$variable == 'Maklun/jasa'], big.mark = ".")
+
 
 ```
 
@@ -257,7 +261,7 @@ ggplot(total_outputstr1_13, aes(x = year, y = value, fill = variable)) +
 ```
 
 
-Pada __industri pakaian jadi__, perubahan struktur output terlihat pada grafik di bawah. Pada tahun 2017, komposisi output industri pakaian jadi didominasi oleh nilai maklun/jasa, di mana nilainya sedikit lebih besar dibandingkan nilai produksi barang. Pada periode selanjutnya, tercatat nilai produksi barang berkontribusi signifikan dalam struktur output industri pakaian jadi. _Nilai produksi pakaian jadi_ mencapai _`r prod14_2021`_ pada tahun 2021, sementara _nilai maklun/jasa_ tercatat sebesar _`r serv14_2021`_ dan _pendapatan lain_ sebesar _`r othout14_2021`_.
+Pada __industri pakaian jadi__, perubahan struktur output terlihat pada grafik di bawah. Pada tahun 2017, komposisi output industri pakaian jadi didominasi oleh nilai maklun/jasa, di mana nilainya, `r serv14_2017` sedikit lebih besar dibandingkan nilai produksi barang, `r prod14_2017`. Pada periode selanjutnya, tercatat nilai produksi barang berkontribusi signifikan dalam struktur output industri pakaian jadi. _Nilai produksi pakaian jadi_ mencapai _`r prod14_2021`_ pada tahun 2021, sementara _nilai maklun/jasa_ tercatat sebesar _`r serv14_2021`_ dan _pendapatan lain_ sebesar _`r othout14_2021`_.
 
 
 ### Struktur output industri pakaian jadi
@@ -306,7 +310,7 @@ input14_2021 <- format(total_input$total[total_input$year == 2021 & total_input$
 ```
 
 
-Total pengeluaran untuk input produksi industri TPT berfluktuasi sepanjang 2016-2021. Total pengeluaran input industri TPT tertinggi terjadi pada tahun 2019, di mana nilainya mencapai _`r input1314_2019`_. Pada tahun 2021, nilai input pada _industri tekstil_ mengalami penurunan dari beberapa tahun sebelumnya menjadi _`r input13_2021`_. Sebaliknya, nilai input _industri pakaian jadi_ meningkat menjadi _`r input14_2021`_ di tahun 2021.
+Total pengeluaran untuk input produksi industri TPT berfluktuasi sepanjang 2016-2021. Total pengeluaran input industri TPT tertinggi terjadi pada tahun 2019, di mana nilainya mencapai _`r input1314_2019`_ miliar Rupiah. Pada tahun 2021, nilai input pada _industri tekstil_ mengalami penurunan dibandingkan beberapa tahun sebelumnya menjadi _`r input13_2021`_ miliar Rupiah. Sebaliknya, nilai input _industri pakaian jadi_ meningkat menjadi _`r input14_2021`_ miliar Rupiah di tahun 2021.
 
 
 ```{r, warning=FALSE}
