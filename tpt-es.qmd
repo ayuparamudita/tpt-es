@@ -132,13 +132,13 @@ shp_2023 <- shp %>%
 
 
 # Add info label
-info <- paste0(
+Statistik <- paste0(
   "\nProvinsi: ", shp_2023$Propinsi,
   "\nJumlah industri TPT: ", shp_2023$total_tpt,
   "\nJumlah industri tekstil: ", shp_2023$tekstil,
   "\nJumlah industri pakaian jadi: ", shp_2023$pakaian
 )
-shp_2023$info <- info
+shp_2023$Statistik <- Statistik
 
 #info14 <- paste0(
 #  "\nIndustri Pakaian Jadi",
@@ -157,7 +157,7 @@ Industri TPT tersebar di beberapa provinsi di Indonesia, namun utamanya industri
 ```{r, warning=FALSE}
 # Plot map
 plottpt_23 <- ggplot(shp_2023) +
-  geom_sf(aes(fill = total_tpt, label = info)) +
+  geom_sf(aes(fill = total_tpt, label = Statistik)) +
   scale_fill_viridis_c(name = "") +
   ggtitle("Sebaran Industri Tekstil dan Produk Tekstil") +
   theme_minimal()
