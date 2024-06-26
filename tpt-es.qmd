@@ -8,9 +8,9 @@ format: html
 execute:
   echo: false
   warning: false
+  message: false
 toc: true
 editor: visual
-
 ---
 
 ```{css}
@@ -19,16 +19,18 @@ p {
 }
 ```
 
-
 ```{r, warning=FALSE}
 # Package
 library(readxl)
 library(dplyr)
+library(tidyverse)
 
 ### Visualization----------------------------------------------------------
 library(ggplot2)
 library(ggthemes)
 library(scales)
+library(sf)
+library(plotly)
 ```
 
 ```{r}
@@ -40,27 +42,22 @@ tpt1721     <- read_xlsx("D:/##AYUPA DESKTOP 2/TPT/tp1721.xlsx")
 tpt_combine_est <- read_xlsx("D:/##AYUPA DESKTOP 2/TPT/tpt_combine_est.xlsx")
 ```
 
-
 ## Pendahuluan
 
 Industri tekstil dan produk tekstil (TPT) merupakan salah satu sektor unggulan dalam perekonomian Indonesia. Sektor ini tidak hanya menjadi tulang punggung ekspor non-migas, tetapi juga berperan penting dalam penyerapan tenaga kerja dan pertumbuhan industri dalam negeri, di mana industri TPT menyumbang sekitar 4,88 persen terhadap kinerja industri manufaktur nasional. Sebagai negara dengan populasi yang besar dan tenaga kerja yang kompetitif, Indonesia memiliki potensi besar untuk terus mengembangkan industri TPT.
 
 Dalam beberapa tahun terakhir, industri TPT Indonesia telah mengalami dinamika tantangan baik lokal maupun global, khususnya di sisi produksi, tenaga kerja, hingga bahan baku. Oleh karena itu, analisis deskriptif tren industri TPT sangat penting untuk memahami kondisi industri ini dalam beberapa tahun terakhir.
 
-Dalam _executive summary_ ini, kami akan menyajikan gambaran umum mengenai performa industri TPT Indonesia, meliputi data jumlah perusahaan, tenaga kerja, output dan strukturnya, input dan strukturnya, serta isu-isu terkait yang mempengaruhi sektor ini. Harapannya, informasi ini dapat menjadi acuan bagi para pemangku kepentingan dalam mengambil keputusan strategis untuk meningkatkan daya saing dan keberlanjutan industri TPT di Indonesia.
-
+Dalam *executive summary* ini, kami akan menyajikan gambaran umum mengenai performa industri TPT Indonesia, meliputi data jumlah perusahaan, tenaga kerja, output dan strukturnya, input dan strukturnya, serta isu-isu terkait yang mempengaruhi sektor ini. Harapannya, informasi ini dapat menjadi acuan bagi para pemangku kepentingan dalam mengambil keputusan strategis untuk meningkatkan daya saing dan keberlanjutan industri TPT di Indonesia.
 
 ::: {.callout-caution appearance="simple"}
+## *Disclaimer*:
 
-## _Disclaimer_:
-
-* Industri tekstil dan produk tekstil (TPT) mencakup kategori C (Industri Pengolahan) golongan pokok 13 __industri tekstil__ dan golongan pokok 14 __industri pakaian jadi__ dalam Klasifikasi Baku Lapangan Usaha Indonesia (KBLI).
-* Sumber data yang digunakan merupakan gabungan dari hasil _Updating_ Direktori (DPA) dan Survei Tahunan Perusahaan Industri Manufaktur (STPIM) yang dilakukan setiap tahun. Target responden survei adalah perusahaan __berskala besar dan sedang__.
-* Klasifikasi usaha berdasarkan tenaga kerja: usaha dengan jumlah tenaga kerja 20-99 orang diklasifikasikan sebagai skala besar, sedangkan usaha dengan jumlah tenaga kerja lebih dari 99 orang diklasifikasikan sebagai  skala sedang.
-* Publikasi lengkap dapat dilihat di __[www.bps.go.id](www.bps.go.id)__
-
+-   Industri tekstil dan produk tekstil (TPT) mencakup kategori C (Industri Pengolahan) golongan pokok 13 **industri tekstil** dan golongan pokok 14 **industri pakaian jadi** dalam Klasifikasi Baku Lapangan Usaha Indonesia (KBLI).
+-   Sumber data yang digunakan merupakan gabungan dari hasil *Updating* Direktori (DPA) dan Survei Tahunan Perusahaan Industri Manufaktur (STPIM) yang dilakukan setiap tahun. Target responden survei adalah perusahaan **berskala besar dan sedang**.
+-   Klasifikasi usaha berdasarkan tenaga kerja: usaha dengan jumlah tenaga kerja 20-99 orang diklasifikasikan sebagai skala besar, sedangkan usaha dengan jumlah tenaga kerja lebih dari 99 orang diklasifikasikan sebagai skala sedang.
+-   Publikasi lengkap dapat dilihat di [**www.bps.go.id**](www.bps.go.id)
 :::
-
 
 ## Jumlah perusahaan
 
@@ -81,9 +78,7 @@ n14_2021 <- format(total_est$total[total_est$year == 2021 & total_est$isic2 == 1
 
 ```
 
-
-Jumlah perusahaan dalam industri Tekstil, Pakaian, dan Tekstil (TPT) mengalami penurunan tren sepanjang 2016-2021. Namun, pada tahun 2023, terdapat sedikit peningkatan jumlah perusahaan _industri tekstil_ dibandingkan dengan dua tahun sebelumnya. Pada tahun 2023, jumlah perusahaan industri tekstil mencapai _`r n13_2023`_ perusahaan, naik dari `r n13_2021` perusahaan pada tahun 2021. Sementara itu, jumlah perusahaan _industri pakaian jadi_ juga sedikit meningkat, `r n14_2021` perusahaan pada tahun 2021 menjadi _`r n14_2023`_ perusahaan pada tahun 2023.
-
+Jumlah perusahaan dalam industri Tekstil, Pakaian, dan Tekstil (TPT) mengalami penurunan tren sepanjang 2016-2021. Namun, pada tahun 2023, terdapat sedikit peningkatan jumlah perusahaan *industri tekstil* dibandingkan dengan dua tahun sebelumnya. Pada tahun 2023, jumlah perusahaan industri tekstil mencapai *`r n13_2023`* perusahaan, naik dari `r n13_2021` perusahaan pada tahun 2021. Sementara itu, jumlah perusahaan *industri pakaian jadi* juga sedikit meningkat, `r n14_2021` perusahaan pada tahun 2021 menjadi *`r n14_2023`* perusahaan pada tahun 2023.
 
 ```{r, warning=FALSE}
 
@@ -104,6 +99,121 @@ ggplot(total_est, aes(x = factor(year), y = total, fill = factor(name_isic2))) +
 
 ```
 
+### Sebaran industri tekstil dan pakaian jadi
+
+```{r, warning=FALSE, message=FALSE}
+# Load map
+capture_output <- capture.output({
+  shp <- st_read("D:/##AYUPA DESKTOP 2/SPATIAL/indonesia-prov.geojson")
+})
+shp$kode <- as.character(shp$kode)
+
+# Group by 'prov', 'isic', and 'year' and count the number of establishments
+num_by_prov <- tpt_combine_est %>%
+  group_by(prov, isic2, year) %>%
+  summarise(num_est = n()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = isic2, values_from = num_est, values_fill = list(num_est = 0)) %>%
+  rename(tekstil = `13`) %>%
+  rename(pakaian = `14`) %>%
+  mutate(total_tpt = tekstil + pakaian)
+
+# Group by year
+num_by_year <- num_by_prov %>%
+  group_by(year) %>%
+  group_split()
+
+# Data 2023
+shp_2023 <- shp %>% 
+  left_join(num_by_year[[8]], by = c("kode" = "prov")) %>%
+  mutate(tekstil    = ifelse(tekstil    == 0, NA, tekstil)) %>%
+  mutate(pakaian    = ifelse(pakaian    == 0, NA, pakaian)) %>%
+  mutate(total_tpt  = ifelse(total_tpt  == 0, NA, total_tpt))
+
+
+# Add info label
+info <- paste0(
+  "\nProvinsi: ", shp_2023$Propinsi,
+  "\nJumlah industri TPT: ", shp_2023$total_tpt,
+  "\nJumlah industri tekstil: ", shp_2023$tekstil,
+  "\nJumlah industri pakaian jadi: ", shp_2023$pakaian
+)
+shp_2023$info <- info
+
+#info14 <- paste0(
+#  "\nIndustri Pakaian Jadi",
+#  "\nProvinsi: ", shp_2023$Propinsi,
+#  "\nJumlah Perusahaan: ", shp_2023$pakaian
+#)
+#shp_2023$info14 <- info14
+```
+
+Industri TPT tersebar di beberapa provinsi di Indonesia, namun utamanya industri ini masih bersifat Jawa-sentris seperti ditunjukkan pada peta sebaran industri TPT di bawah.
+
+::: {.callout-note appearance="simple"}
+## Arahkan kursor ke peta untuk melihat rincian statistik.
+:::
+
+```{r, warning=FALSE}
+# Plot map
+plottpt_23 <- ggplot(shp_2023) +
+  geom_sf(aes(fill = total_tpt, label = info)) +
+  scale_fill_viridis_c(name = "") +
+  ggtitle("Sebaran Industri Tekstil dan Produk Tekstil") +
+  theme_minimal()
+
+ggplotly(plottpt_23, tooltip = "label")%>%
+  layout(
+    annotations = list(
+      x = 1, y = -0.09,
+      xref = "paper", yref = "paper",
+      text = "Sumber: Updating DPA (2023)",
+      showarrow = FALSE,
+      font = list(size = 10)
+    ))
+
+
+#plot14_23 <- ggplot(shp_2023) +
+#  geom_sf(aes(fill = pakaian, label = info14)) +
+#  scale_fill_viridis_c(limits = range(c(shp_2023$pakaian, shp_2023$tekstil)), name = "") +
+#  ggtitle("Sebaran Industri Pakaian Jadi") +
+#  theme_void()
+
+#ggplotly(plot14_23, tooltip = "label") %>%
+#  layout(
+#    annotations = list(
+#      x = 1, y = -0.05,
+#      xref = "paper", yref = "paper",
+#      text = "Sumber: Updating DPA (2023)",
+#      showarrow = FALSE,
+#      font = list(size = 10)
+#    ))
+
+```
+
+
+
+```{r, warning=FALSE}
+#plot14_23 <- ggplot(shp_2023) +
+#  geom_sf(aes(fill = pakaian, label = info14)) +
+#  scale_fill_viridis_c(limits = range(c(shp_2023$pakaian, shp_2023$tekstil)), name = "") +
+#  ggtitle("Sebaran Industri Pakaian Jadi") +
+#  theme_void()
+
+#ggplotly(plot14_23, tooltip = "label") %>%
+#  layout(
+#    annotations = list(
+#      x = 1, y = -0.05,
+#      xref = "paper", yref = "paper",
+#      text = "Sumber: Updating DPA (2023)",
+#      showarrow = FALSE,
+#      font = list(size = 10)
+#    ))
+
+
+
+#Isu relokasi perusahaan TPT dari suatu wilayah ke wilayah lain dikarenakan faktor kenaikan upah tidak terlihat dari tren pada peta sebaran di bawah sebab seluruh provinsi di Pulau Jawa mengalami penurunan jumlah perusahaan industri TPT.
+```
 
 ## Tenaga kerja
 
@@ -120,9 +230,7 @@ labor14_2021 <- format(total_labor$total[total_labor$year == 2021 & total_labor$
 
 ```
 
-
-Tren tenaga kerja di industri TPT cenderung mengalami penurunan beberapa tahun ke belakang. Pada tahun 2021, industri tekstil menyerap _`r labor13_2021`_ tenaga kerja. Sementara tenaga kerja pada industri pakaian jadi mencapai _`r labor14_2021`_ orang pada periode yang sama.
-
+Tren tenaga kerja di industri TPT cenderung mengalami penurunan beberapa tahun ke belakang. Pada tahun 2021, industri tekstil menyerap *`r labor13_2021`* tenaga kerja. Sementara tenaga kerja pada industri pakaian jadi mencapai *`r labor14_2021`* orang pada periode yang sama.
 
 ```{r, warning=FALSE}
 
@@ -157,9 +265,7 @@ output1314_2019 <- format(total_output$total[total_output$year == 2019 & total_o
 
 ```
 
-
-Output industri TPT berfluktuaktif sepanjang 2016-2021. Pada tahun 2019, sebelum pandemi Covid-19, industri TPT menghasilkan output tertinggi dalam 6 tahun terakhir, di mana nilainya mencapai _`r output1314_2019`_ miliar Rupiah. Pada periode selanjutnya, kinerja industri TPT terindikasi mengalami pelemahan yang terlihat dari penurunan output menjadi _`r output1314_2021`_ miliar Rupiah pada 2021.
-
+Output industri TPT berfluktuaktif sepanjang 2016-2021. Pada tahun 2019, sebelum pandemi Covid-19, industri TPT menghasilkan output tertinggi dalam 6 tahun terakhir, di mana nilainya mencapai *`r output1314_2019`* miliar Rupiah. Pada periode selanjutnya, kinerja industri TPT terindikasi mengalami pelemahan yang terlihat dari penurunan output menjadi *`r output1314_2021`* miliar Rupiah pada 2021.
 
 ```{r, warning=FALSE}
 
@@ -238,9 +344,7 @@ serv14_2017 <- format(total_outputstr1_14$value[total_outputstr1_14$year == 2017
 
 ```
 
-
-Struktur output __industri tekstil__ rata-rata didominasi oleh nilai produksi barang. Pada tahun 2021, _nilai produksi barang tekstil_ mencapai _`r prod13_2021`_ miliar Rupiah. Sementara, proporsi terkecil dalam output indsutri tekstil adalah _nilai maklun/jasa_ yang nilainya sebesar _`r serv13_2021`_ miliar Rupiah. Sisanya, _`r othout13_2021`_ miliar Rupiah berasal dari _pendapatan lainnya_.
-
+Struktur output **industri tekstil** rata-rata didominasi oleh nilai produksi barang. Pada tahun 2021, *nilai produksi barang tekstil* mencapai *`r prod13_2021`* miliar Rupiah. Sementara, proporsi terkecil dalam output indsutri tekstil adalah *nilai maklun/jasa* yang nilainya sebesar *`r serv13_2021`* miliar Rupiah. Sisanya, *`r othout13_2021`* miliar Rupiah berasal dari *pendapatan lainnya*.
 
 ```{r, warning=FALSE}
 
@@ -261,11 +365,10 @@ ggplot(total_outputstr1_13, aes(x = year, y = value, fill = variable)) +
 
 ```
 
-
-Pada __industri pakaian jadi__, perubahan struktur output terlihat pada grafik di bawah. Pada tahun 2017, komposisi output industri pakaian jadi didominasi oleh nilai maklun/jasa, di mana nilainya, `r serv14_2017` sedikit lebih besar dibandingkan nilai produksi barang, `r prod14_2017`. Pada periode selanjutnya, tercatat nilai produksi barang berkontribusi signifikan dalam struktur output industri pakaian jadi. _Nilai produksi pakaian jadi_ mencapai _`r prod14_2021`_ pada tahun 2021, sementara _nilai maklun/jasa_ tercatat sebesar _`r serv14_2021`_ dan _pendapatan lain_ sebesar _`r othout14_2021`_.
-
+Pada **industri pakaian jadi**, perubahan struktur output terlihat pada grafik di bawah. Pada tahun 2017, komposisi output industri pakaian jadi didominasi oleh nilai maklun/jasa, di mana nilainya, `r serv14_2017` sedikit lebih besar dibandingkan nilai produksi barang, `r prod14_2017`. Pada periode selanjutnya, tercatat nilai produksi barang berkontribusi signifikan dalam struktur output industri pakaian jadi. *Nilai produksi pakaian jadi* mencapai *`r prod14_2021`* pada tahun 2021, sementara *nilai maklun/jasa* tercatat sebesar *`r serv14_2021`* dan *pendapatan lain* sebesar *`r othout14_2021`*.
 
 ### Struktur output industri pakaian jadi
+
 ```{r, warning=FALSE}
 # Struktur Output Pakaian Jadi
 ggplot(total_outputstr1_14, aes(x = year, y = value, fill = variable)) +
@@ -287,13 +390,10 @@ ggplot(total_outputstr1_14, aes(x = year, y = value, fill = variable)) +
 ## Input
 
 ::: {.callout-note appearance="simple"}
-
 ## Catatan:
 
 Input meliputi pengeluaran upah untuk tenaga kerja, bahan baku lokal dan impor, serta pengeluaran untuk input lainnya yang dikeluarkan oleh perusahaan.
-
 :::
-
 
 ```{r, warning=FALSE}
 ### Input ----------------------------------------------------------
@@ -310,9 +410,7 @@ input14_2021 <- format(total_input$total[total_input$year == 2021 & total_input$
 
 ```
 
-
-Total pengeluaran untuk input produksi industri TPT berfluktuasi sepanjang 2016-2021. Total pengeluaran input industri TPT tertinggi terjadi pada tahun 2019, di mana nilainya mencapai _`r input1314_2019`_ miliar Rupiah. Pada tahun 2021, nilai input pada _industri tekstil_ mengalami penurunan dibandingkan beberapa tahun sebelumnya menjadi _`r input13_2021`_ miliar Rupiah. Sebaliknya, nilai input _industri pakaian jadi_ meningkat menjadi _`r input14_2021`_ miliar Rupiah di tahun 2021.
-
+Total pengeluaran untuk input produksi industri TPT berfluktuasi sepanjang 2016-2021. Total pengeluaran input industri TPT tertinggi terjadi pada tahun 2019, di mana nilainya mencapai *`r input1314_2019`* miliar Rupiah. Pada tahun 2021, nilai input pada *industri tekstil* mengalami penurunan dibandingkan beberapa tahun sebelumnya menjadi *`r input13_2021`* miliar Rupiah. Sebaliknya, nilai input *industri pakaian jadi* meningkat menjadi *`r input14_2021`* miliar Rupiah di tahun 2021.
 
 ```{r, warning=FALSE}
 
@@ -331,7 +429,6 @@ ggplot(total_input, aes(x = factor(year), y = total, fill = factor(name_isic2)))
   scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
 
 ```
-
 
 ### Struktur input industri tekstil
 
@@ -425,9 +522,7 @@ pbbimp13_2021 <- format(input21_prop_13$prop[input21_prop_13$variable == 'Bahan 
 
 ```
 
-
-Struktur input industri tekstil rata-rata didominasi oleh pengeluaran untuk bahan baku. Sepanjang 2017-2021, tidak ada indikasi bahwa bahan baku impor mendominasi struktur input industri tekstil. Sebaliknya, bahan baku lokal memiliki kontribusi yang lebih besar dibandingkan bahan baku impor di dalam komposisi input industri ini. Pada tahun 2021, nilai pengeluaran untuk bahan baku lokal mencapai _`r pbbdom13_2021`_ persen dari total nilai input atau sebesar _`r bbdom13_2021`_ miliar Rupiah. Sementara, pengeluaran bahan baku impor sebesar _`r pbbimp13_2021`_ persen atau _`r bbimp13_2021`_ miliar Rupiah.
-
+Struktur input industri tekstil rata-rata didominasi oleh pengeluaran untuk bahan baku. Sepanjang 2017-2021, tidak ada indikasi bahwa bahan baku impor mendominasi struktur input industri tekstil. Sebaliknya, bahan baku lokal memiliki kontribusi yang lebih besar dibandingkan bahan baku impor di dalam komposisi input industri ini. Pada tahun 2021, nilai pengeluaran untuk bahan baku lokal mencapai *`r pbbdom13_2021`* persen dari total nilai input atau sebesar *`r bbdom13_2021`* miliar Rupiah. Sementara, pengeluaran bahan baku impor sebesar *`r pbbimp13_2021`* persen atau *`r bbimp13_2021`* miliar Rupiah.
 
 ```{r, warning=FALSE}
 # Struktur Input Tekstil
@@ -504,9 +599,7 @@ pbbimp14_2021 <- format(input21_prop_14$prop[input21_prop_14$variable == 'Bahan 
 
 ```
 
-
-Perubahan komposisi input __industri pakaian jadi__ cukup dinamis sepanjang 2017-2021. Pelemahan kinerja industri tekstil dalam beberapa tahun terakhir disinyalir berpengaruh terhadap pasokan bahan baku lokal pada industri lanjutannya, yaitu industri pakaian jadi. Nilai pengeluaran untuk bahan baku impor meningkat tajam dari _`r bbimp14_2017`_ miliar Rupiah pada tahun 2017 menjadi _`r bbimp14_2021`_ miliar Rupiah pada tahun 2021 atau _`r pbbimp14_2021`_ persen dari total nilai input industri pakaian jadi. Sementara itu, pengeluaran bahan baku lokal hanya berkontribusi _`r pbbdom14_2021`_ persen atau sebesar _`r bbdom14_2021`_ miliar Rupiah.
-
+Perubahan komposisi input **industri pakaian jadi** cukup dinamis sepanjang 2017-2021. Pelemahan kinerja industri tekstil dalam beberapa tahun terakhir disinyalir berpengaruh terhadap pasokan bahan baku lokal pada industri lanjutannya, yaitu industri pakaian jadi. Nilai pengeluaran untuk bahan baku impor meningkat tajam dari *`r bbimp14_2017`* miliar Rupiah pada tahun 2017 menjadi *`r bbimp14_2021`* miliar Rupiah pada tahun 2021 atau *`r pbbimp14_2021`* persen dari total nilai input industri pakaian jadi. Sementara itu, pengeluaran bahan baku lokal hanya berkontribusi *`r pbbdom14_2021`* persen atau sebesar *`r bbdom14_2021`* miliar Rupiah.
 
 ```{r, warning=FALSE}
 # Struktur Output Pakaian Jadi
@@ -525,7 +618,6 @@ ggplot(total_inputstr1_14, aes(x = year, y = value, fill = variable)) +
   scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
 
 ```
-
 
 ```{r, warning=FALSE}
 ### ### Proporsi upah dan input tekstil ----------------------------------------------------------
