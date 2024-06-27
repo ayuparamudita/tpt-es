@@ -191,7 +191,7 @@ ggplotly(plottpt_23, tooltip = "label")%>%
 
 ```
 
-
+### Tren industri tekstil dan pakaian jadi 2016-2023
 
 ```{r, warning=FALSE}
 #plot14_23 <- ggplot(shp_2023) +
