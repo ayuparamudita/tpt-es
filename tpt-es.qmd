@@ -132,20 +132,14 @@ shp_2023 <- shp %>%
 
 
 # Add info label
-Statistik <- paste0(
+Statistik2023 <- paste0(
   "\nProvinsi: ", shp_2023$Propinsi,
   "\nJumlah industri TPT: ", shp_2023$total_tpt,
   "\nJumlah industri tekstil: ", shp_2023$tekstil,
   "\nJumlah industri pakaian jadi: ", shp_2023$pakaian
 )
-shp_2023$Statistik <- Statistik
+shp_2023$Statistik2023 <- Statistik2023
 
-#info14 <- paste0(
-#  "\nIndustri Pakaian Jadi",
-#  "\nProvinsi: ", shp_2023$Propinsi,
-#  "\nJumlah Perusahaan: ", shp_2023$pakaian
-#)
-#shp_2023$info14 <- info14
 ```
 
 Industri TPT tersebar di beberapa provinsi di Indonesia, namun utamanya industri ini masih bersifat Jawa-sentris seperti ditunjukkan pada peta sebaran industri TPT di bawah.
@@ -157,8 +151,8 @@ Industri TPT tersebar di beberapa provinsi di Indonesia, namun utamanya industri
 ```{r, warning=FALSE}
 # Plot map
 plottpt_23 <- ggplot(shp_2023) +
-  geom_sf(aes(fill = total_tpt, label = Statistik)) +
-  scale_fill_viridis_c(name = "") +
+  geom_sf(aes(fill = total_tpt, label = Statistik2023)) +
+  scale_fill_viridis_c(limits = range(c(1, 2380)), name = "") +   # same range as Java
   ggtitle("Sebaran Industri Tekstil dan Produk Tekstil") +
   theme_minimal()
 
@@ -172,48 +166,91 @@ ggplotly(plottpt_23, tooltip = "label")%>%
       font = list(size = 10)
     ))
 
-
-#plot14_23 <- ggplot(shp_2023) +
-#  geom_sf(aes(fill = pakaian, label = info14)) +
-#  scale_fill_viridis_c(limits = range(c(shp_2023$pakaian, shp_2023$tekstil)), name = "") +
-#  ggtitle("Sebaran Industri Pakaian Jadi") +
-#  theme_void()
-
-#ggplotly(plot14_23, tooltip = "label") %>%
-#  layout(
-#    annotations = list(
-#      x = 1, y = -0.05,
-#      xref = "paper", yref = "paper",
-#      text = "Sumber: Updating DPA (2023)",
-#      showarrow = FALSE,
-#      font = list(size = 10)
-#    ))
-
 ```
 
-### Tren industri tekstil dan pakaian jadi 2016-2023
+### Tren industri tekstil dan pakaian jadi di Pulau Jawa, 2016-2023
 
 ```{r, warning=FALSE}
-#plot14_23 <- ggplot(shp_2023) +
-#  geom_sf(aes(fill = pakaian, label = info14)) +
-#  scale_fill_viridis_c(limits = range(c(shp_2023$pakaian, shp_2023$tekstil)), name = "") +
-#  ggtitle("Sebaran Industri Pakaian Jadi") +
-#  theme_void()
 
-#ggplotly(plot14_23, tooltip = "label") %>%
-#  layout(
-#    annotations = list(
-#      x = 1, y = -0.05,
-#      xref = "paper", yref = "paper",
-#      text = "Sumber: Updating DPA (2023)",
-#      showarrow = FALSE,
-#      font = list(size = 10)
-#    ))
+# Data 2016
+shp_2016_java <- shp %>% 
+  left_join(num_by_year[[1]], by = c("kode" = "prov")) %>%
+  mutate(tekstil    = ifelse(tekstil    == 0, NA, tekstil)) %>%
+  mutate(pakaian    = ifelse(pakaian    == 0, NA, pakaian)) %>%
+  mutate(total_tpt  = ifelse(total_tpt  == 0, NA, total_tpt)) %>%
+  filter(kode > 30 & kode <40)
+
+# Add info label
+Statistik2016 <- paste0(
+  "\nProvinsi: ", shp_2016_java$Propinsi,
+  "\nJumlah industri TPT: ", shp_2016_java$total_tpt,
+  "\nJumlah industri tekstil: ", shp_2016_java$tekstil,
+  "\nJumlah industri pakaian jadi: ", shp_2016_java$pakaian
+)
+shp_2016_java$Statistik2016 <- Statistik2016
+
+# Data 2023
+shp_2023_java <- shp %>% 
+  left_join(num_by_year[[8]], by = c("kode" = "prov")) %>%
+  mutate(tekstil    = ifelse(tekstil    == 0, NA, tekstil)) %>%
+  mutate(pakaian    = ifelse(pakaian    == 0, NA, pakaian)) %>%
+  mutate(total_tpt  = ifelse(total_tpt  == 0, NA, total_tpt)) %>%
+  filter(kode > 30 & kode <40)
+
+
+# Add info label
+Statistik2023 <- paste0(
+  "\nProvinsi: ", shp_2023_java$Propinsi,
+  "\nJumlah industri TPT: ", shp_2023_java$total_tpt,
+  "\nJumlah industri tekstil: ", shp_2023_java$tekstil,
+  "\nJumlah industri pakaian jadi: ", shp_2023_java$pakaian
+)
+shp_2023_java$Statistik2023 <- Statistik2023
 
 
 
-#Isu relokasi perusahaan TPT dari suatu wilayah ke wilayah lain dikarenakan faktor kenaikan upah tidak terlihat dari tren pada peta sebaran di bawah sebab seluruh provinsi di Pulau Jawa mengalami penurunan jumlah perusahaan industri TPT.
+plottpt_16_java <- ggplot(shp_2016_java) +
+  geom_sf(aes(fill = total_tpt, label = Statistik2016)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
+#  ggtitle("Sebaran Industri TPT 2016") +
+  theme_void()
+
+plottpt_23_java <- ggplot(shp_2023_java) +
+  geom_sf(aes(fill = total_tpt, label = Statistik2023)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
+  ggtitle("Sebaran Industri TPT 2016 (atas) dan 2023 (bawah)") +
+  theme_void()
+
+
+combined_plot_java <- subplot(
+  ggplotly(plottpt_16_java, tooltip = "label") %>%
+    layout(
+    annotations = list(
+      x = 1, y = -0.05,
+      xref = "paper", yref = "paper",
+      text = "Sumber: Sensus Ekonomi 2016 (atas), Updating DPA 2023 (bawah)",
+      showarrow = FALSE,
+      font = list(size = 10)
+      )),
+  ggplotly(plottpt_23_java, tooltip = "label") %>%
+    layout(
+    annotations = list(
+      x = 1, y = -0.05,
+      xref = "paper", yref = "paper",
+#      text = "Sumber: Sensus Ekonomi 2016, Updating DPA 2023",
+      showarrow = FALSE,
+      font = list(size = 10)
+      )),
+  nrows = 2)
+combined_plot_java
+
+tpt32_16 <- format(shp_2016_java$total_tpt[shp_2016_java$kode == 32], big.mark = ".")
+tpt32_23 <- format(shp_2023_java$total_tpt[shp_2023_java$kode == 32], big.mark = ".")
+
 ```
+
+Isu relokasi perusahaan TPT dari suatu wilayah ke wilayah lain di Pulau Jawa dikarenakan faktor kenaikan upah minimum tidak terlihat pada peta tren sebaran industri di atas. Provinsi Jawa Barat, contohnya, mengalami penurunan jumlah industri TPT sepanjang 2016 hingga 2023, dari `r tpt32_16` menjadi `r tpt32_23` perusahaan. Penurunan jumlah industri di Provinsi Jawa Barat tidak menunjukkan indikasi adanya relokasi usaha ke provinsi lain dengan upah minimum yang lebih rendah, seperti Provinsi Jawa Tengah, sebab semua provinsi di Pulau Jawa, kecuali DI Yogyakarta, tercatat mengalami penurunan jumlah perusahaan industri TPT sepanjang 2016-2023.
+
 
 ## Tenaga kerja
 
