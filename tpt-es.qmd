@@ -54,8 +54,8 @@ Dalam *executive summary* ini, kami akan menyajikan gambaran umum mengenai perfo
 ## *Disclaimer*:
 
 -   Industri tekstil dan produk tekstil (TPT) mencakup kategori C (Industri Pengolahan) golongan pokok 13 **industri tekstil** dan golongan pokok 14 **industri pakaian jadi** dalam Klasifikasi Baku Lapangan Usaha Indonesia (KBLI).
--   Sumber data yang digunakan merupakan gabungan dari hasil *Updating* Direktori (DPA) dan Survei Tahunan Perusahaan Industri Manufaktur (STPIM) yang dilakukan setiap tahun. Target responden survei adalah perusahaan **berskala besar dan sedang**.
--   Klasifikasi usaha berdasarkan tenaga kerja: usaha dengan jumlah tenaga kerja 20-99 orang diklasifikasikan sebagai skala besar, sedangkan usaha dengan jumlah tenaga kerja lebih dari 99 orang diklasifikasikan sebagai skala sedang.
+-   Sumber data yang digunakan merupakan gabungan dari hasil *Updating* Direktori (DPA) dan Survei Tahunan Perusahaan Industri Manufaktur (STPIM) yang dilakukan setiap tahun. Pada tahun 2016, STPIM terintegrasi dengan Sensus Ekonomi 2016. Target responden survei adalah perusahaan **berskala besar dan menengah**.
+-  Klasifikasi skala usaha didasarkan pada tenaga kerja hingga tahun 2020. Setelahnya, klasifikasi skala usaha sejak tahun 2021 menjadi: **Industri besar** adalah perusahaan industri manufaktur yang memenuhi salah satu kriteria jumlah tenaga kerja lebih dari 99 orang atau nilai akumulasi investasi/modal tetap sejak pendirian pabrik lebih dari Rp. 10 miliar atau omset perusahaan lebih besar dari Rp. 50 miliar; **Industri menengah** adalah perusahaan industri manufaktur yang memenuhi salah satu kriteria jumlah tenaga kerja kurang dari sama dengan 99 orang atau nilai akumulasi investasi/modal tetap sejak pendirian pabrik Rp. 5-10 miliar atau omset perusahaan Rp. 10-50 miliar.
 -   Publikasi lengkap dapat dilihat di [**www.bps.go.id**](www.bps.go.id)
 :::
 
@@ -251,6 +251,84 @@ tpt32_23 <- format(shp_2023_java$total_tpt[shp_2023_java$kode == 32], big.mark =
 
 Isu relokasi perusahaan TPT dari suatu wilayah ke wilayah lain di Pulau Jawa dikarenakan faktor kenaikan upah minimum tidak terlihat pada peta tren sebaran industri di atas. Provinsi Jawa Barat, contohnya, mengalami penurunan jumlah industri TPT sepanjang 2016 hingga 2023, dari `r tpt32_16` menjadi `r tpt32_23` perusahaan. Penurunan jumlah industri di Provinsi Jawa Barat tidak menunjukkan indikasi adanya relokasi usaha ke provinsi lain dengan upah minimum yang lebih rendah, seperti Provinsi Jawa Tengah, sebab semua provinsi di Pulau Jawa, kecuali DI Yogyakarta, tercatat mengalami penurunan jumlah perusahaan industri TPT sepanjang 2016-2023.
 
+
+
+```{r, warning=FALSE, include=FALSE}
+# Tekstil
+plottpt_16_java13 <- ggplot(shp_2016_java) +
+  geom_sf(aes(fill = tekstil, label = Statistik2016)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
+#  ggtitle("Sebaran Industri TPT 2016") +
+  theme_void()
+
+plottpt_23_java13 <- ggplot(shp_2023_java) +
+  geom_sf(aes(fill = tekstil, label = Statistik2023)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
+  ggtitle("Sebaran Industri Tekstil 2016 (atas) dan 2023 (bawah)") +
+  theme_void()
+
+
+combined_plot_java13 <- subplot(
+  ggplotly(plottpt_16_java13, tooltip = "label") %>%
+    layout(
+    annotations = list(
+      x = 1, y = -0.05,
+      xref = "paper", yref = "paper",
+      text = "Sumber: Sensus Ekonomi 2016 (atas), Updating DPA 2023 (bawah)",
+      showarrow = FALSE,
+      font = list(size = 10)
+      )),
+  ggplotly(plottpt_23_java13, tooltip = "label") %>%
+    layout(
+    annotations = list(
+      x = 1, y = -0.05,
+      xref = "paper", yref = "paper",
+#      text = "Sumber: Sensus Ekonomi 2016, Updating DPA 2023",
+      showarrow = FALSE,
+      font = list(size = 10)
+      )),
+  nrows = 2)
+combined_plot_java13
+
+
+
+
+# Pakaian Jadi
+plottpt_16_java14 <- ggplot(shp_2016_java) +
+  geom_sf(aes(fill = pakaian, label = Statistik2016)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
+#  ggtitle("Sebaran Industri TPT 2016") +
+  theme_void()
+
+plottpt_23_java14 <- ggplot(shp_2023_java) +
+  geom_sf(aes(fill = pakaian, label = Statistik2023)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
+  ggtitle("Sebaran Industri Pakaian Jadi 2016 (atas) dan 2023 (bawah)") +
+  theme_void()
+
+
+combined_plot_java14 <- subplot(
+  ggplotly(plottpt_16_java14, tooltip = "label") %>%
+    layout(
+    annotations = list(
+      x = 1, y = -0.05,
+      xref = "paper", yref = "paper",
+      text = "Sumber: Sensus Ekonomi 2016 (atas), Updating DPA 2023 (bawah)",
+      showarrow = FALSE,
+      font = list(size = 10)
+      )),
+  ggplotly(plottpt_23_java14, tooltip = "label") %>%
+    layout(
+    annotations = list(
+      x = 1, y = -0.05,
+      xref = "paper", yref = "paper",
+#      text = "Sumber: Sensus Ekonomi 2016, Updating DPA 2023",
+      showarrow = FALSE,
+      font = list(size = 10)
+      )),
+  nrows = 2)
+combined_plot_java14
+```
 
 ## Tenaga kerja
 
