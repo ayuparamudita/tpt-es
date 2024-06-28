@@ -55,7 +55,7 @@ Dalam *executive summary* ini, kami akan menyajikan gambaran umum mengenai perfo
 
 -   Industri tekstil dan produk tekstil (TPT) mencakup kategori C (Industri Pengolahan) golongan pokok 13 **industri tekstil** dan golongan pokok 14 **industri pakaian jadi** dalam Klasifikasi Baku Lapangan Usaha Indonesia (KBLI).
 -   Sumber data yang digunakan merupakan gabungan dari hasil *Updating* Direktori (DPA) dan Survei Tahunan Perusahaan Industri Manufaktur (STPIM) yang dilakukan setiap tahun. Pada tahun 2016, STPIM terintegrasi dengan Sensus Ekonomi 2016. Target responden survei adalah perusahaan **berskala besar dan menengah**.
--  Klasifikasi skala usaha didasarkan pada tenaga kerja hingga tahun 2020. Setelahnya, klasifikasi skala usaha sejak tahun 2021 menjadi: Industri besar adalah perusahaan industri manufaktur yang memenuhi salah satu kriteria jumlah tenaga kerja lebih dari 99 orang atau nilai akumulasi investasi/modal tetap sejak pendirian pabrik lebih dari Rp. 10 miliar atau omset perusahaan lebih besar dari Rp. 50 miliar; Industri menengah adalah perusahaan industri manufaktur yang memenuhi salah satu kriteria jumlah tenaga kerja kurang dari sama dengan 99 orang atau nilai akumulasi investasi/modal tetap sejak pendirian pabrik Rp. 5-10 miliar atau omset perusahaan Rp. 10-50 miliar.
+-   Klasifikasi skala usaha didasarkan pada tenaga kerja hingga tahun 2020. Setelahnya, klasifikasi skala usaha sejak tahun 2021 menjadi: Industri besar adalah perusahaan industri manufaktur yang memenuhi salah satu kriteria jumlah tenaga kerja lebih dari 99 orang atau nilai akumulasi investasi/modal tetap sejak pendirian pabrik lebih dari Rp. 10 miliar atau omset perusahaan lebih besar dari Rp. 50 miliar; Industri menengah adalah perusahaan industri manufaktur yang memenuhi salah satu kriteria jumlah tenaga kerja kurang dari sama dengan 99 orang atau nilai akumulasi investasi/modal tetap sejak pendirian pabrik Rp. 5-10 miliar atau omset perusahaan Rp. 10-50 miliar.
 -   Publikasi lengkap dapat dilihat di [**www.bps.go.id**](www.bps.go.id)
 :::
 
@@ -168,26 +168,26 @@ ggplotly(plottpt_23, tooltip = "label")%>%
 
 ```
 
-### Tren industri tekstil dan pakaian jadi di Pulau Jawa, 2016-2023
+### Tren industri tekstil dan pakaian jadi di Pulau Jawa, 2019-2023
 
 ```{r, warning=FALSE}
 
-# Data 2016
-shp_2016_java <- shp %>% 
-  left_join(num_by_year[[1]], by = c("kode" = "prov")) %>%
+# Data 2019
+shp_2019_java <- shp %>% 
+  left_join(num_by_year[[4]], by = c("kode" = "prov")) %>%
   mutate(tekstil    = ifelse(tekstil    == 0, NA, tekstil)) %>%
   mutate(pakaian    = ifelse(pakaian    == 0, NA, pakaian)) %>%
   mutate(total_tpt  = ifelse(total_tpt  == 0, NA, total_tpt)) %>%
   filter(kode > 30 & kode <40)
 
 # Add info label
-Statistik2016 <- paste0(
-  "\nProvinsi: ", shp_2016_java$Propinsi,
-  "\nJumlah industri TPT: ", shp_2016_java$total_tpt,
-  "\nJumlah industri tekstil: ", shp_2016_java$tekstil,
-  "\nJumlah industri pakaian jadi: ", shp_2016_java$pakaian
+Statistik2019 <- paste0(
+  "\nProvinsi: ", shp_2019_java$Propinsi,
+  "\nJumlah industri TPT: ", shp_2019_java$total_tpt,
+  "\nJumlah industri tekstil: ", shp_2019_java$tekstil,
+  "\nJumlah industri pakaian jadi: ", shp_2019_java$pakaian
 )
-shp_2016_java$Statistik2016 <- Statistik2016
+shp_2019_java$Statistik2016 <- Statistik2019
 
 # Data 2023
 shp_2023_java <- shp %>% 
@@ -209,26 +209,26 @@ shp_2023_java$Statistik2023 <- Statistik2023
 
 
 
-plottpt_16_java <- ggplot(shp_2016_java) +
-  geom_sf(aes(fill = total_tpt, label = Statistik2016)) +
-  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
+plottpt_19_java <- ggplot(shp_2019_java) +
+  geom_sf(aes(fill = total_tpt, label = Statistik2019)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2019_java$total_tpt)), name = "") +
 #  ggtitle("Sebaran Industri TPT 2016") +
   theme_void()
 
 plottpt_23_java <- ggplot(shp_2023_java) +
   geom_sf(aes(fill = total_tpt, label = Statistik2023)) +
-  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
-  ggtitle("Sebaran Industri TPT 2016 (atas) dan 2023 (bawah)") +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2019_java$total_tpt)), name = "") +
+  ggtitle("Sebaran Industri TPT 2019 (atas) dan 2023 (bawah)") +
   theme_void()
 
 
 combined_plot_java <- subplot(
-  ggplotly(plottpt_16_java, tooltip = "label") %>%
+  ggplotly(plottpt_19_java, tooltip = "label") %>%
     layout(
     annotations = list(
       x = 1, y = -0.05,
       xref = "paper", yref = "paper",
-      text = "Sumber: Sensus Ekonomi 2016 (atas), Updating DPA 2023 (bawah)",
+      text = "Sumber: STPIM 2019 (atas), Updating DPA 2023 (bawah)",
       showarrow = FALSE,
       font = list(size = 10)
       )),
@@ -237,44 +237,42 @@ combined_plot_java <- subplot(
     annotations = list(
       x = 1, y = -0.05,
       xref = "paper", yref = "paper",
-#      text = "Sumber: Sensus Ekonomi 2016, Updating DPA 2023",
+#      text = "Sumber: S STPIM 2019, Updating DPA 2023",
       showarrow = FALSE,
       font = list(size = 10)
       )),
   nrows = 2)
 combined_plot_java
 
-tpt32_16 <- format(shp_2016_java$total_tpt[shp_2016_java$kode == 32], big.mark = ".")
+tpt32_19 <- format(shp_2019_java$total_tpt[shp_2019_java$kode == 32], big.mark = ".")
 tpt32_23 <- format(shp_2023_java$total_tpt[shp_2023_java$kode == 32], big.mark = ".")
 
 ```
 
-Isu relokasi perusahaan TPT dari suatu wilayah ke wilayah lain di Pulau Jawa dikarenakan faktor kenaikan upah minimum tidak terlihat pada peta tren sebaran industri di atas. Provinsi Jawa Barat, contohnya, mengalami penurunan jumlah industri TPT sepanjang 2016 hingga 2023, dari `r tpt32_16` menjadi `r tpt32_23` perusahaan. Penurunan jumlah industri di Provinsi Jawa Barat tidak menunjukkan indikasi adanya relokasi usaha ke provinsi lain dengan upah minimum yang lebih rendah, seperti Provinsi Jawa Tengah, sebab semua provinsi di Pulau Jawa, kecuali DI Yogyakarta, tercatat mengalami penurunan jumlah perusahaan industri TPT sepanjang 2016-2023.
-
-
+Isu relokasi perusahaan TPT dari suatu wilayah ke wilayah lain di Pulau Jawa dikarenakan faktor kenaikan upah minimum tidak terlihat pada peta tren sebaran industri di atas. Provinsi Jawa Barat, contohnya, mengalami penurunan jumlah industri TPT sepanjang 2019 hingga 2023, dari `r tpt32_19` menjadi `r tpt32_23` perusahaan. Penurunan jumlah industri di Provinsi Jawa Barat tidak menunjukkan indikasi adanya relokasi usaha ke provinsi lain dengan upah minimum yang lebih rendah, seperti Provinsi Jawa Tengah, sebab semua provinsi di Pulau Jawa, kecuali DI Yogyakarta dan Banten, tercatat mengalami penurunan jumlah perusahaan industri TPT sepanjang 2016-2023.
 
 ```{r, warning=FALSE, include=FALSE}
 # Tekstil
-plottpt_16_java13 <- ggplot(shp_2016_java) +
-  geom_sf(aes(fill = tekstil, label = Statistik2016)) +
-  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
-#  ggtitle("Sebaran Industri TPT 2016") +
+plottpt_19_java13 <- ggplot(shp_2019_java) +
+  geom_sf(aes(fill = tekstil, label = Statistik2019)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2019_java$total_tpt)), name = "") +
+#  ggtitle("Sebaran Industri TPT 2019") +
   theme_void()
 
 plottpt_23_java13 <- ggplot(shp_2023_java) +
   geom_sf(aes(fill = tekstil, label = Statistik2023)) +
-  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
-  ggtitle("Sebaran Industri Tekstil 2016 (atas) dan 2023 (bawah)") +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2019_java$total_tpt)), name = "") +
+  ggtitle("Sebaran Industri Tekstil 2019 (atas) dan 2023 (bawah)") +
   theme_void()
 
 
 combined_plot_java13 <- subplot(
-  ggplotly(plottpt_16_java13, tooltip = "label") %>%
+  ggplotly(plottpt_19_java13, tooltip = "label") %>%
     layout(
     annotations = list(
       x = 1, y = -0.05,
       xref = "paper", yref = "paper",
-      text = "Sumber: Sensus Ekonomi 2016 (atas), Updating DPA 2023 (bawah)",
+      text = "Sumber: STPIM 2019 (atas), Updating DPA 2023 (bawah)",
       showarrow = FALSE,
       font = list(size = 10)
       )),
@@ -283,7 +281,7 @@ combined_plot_java13 <- subplot(
     annotations = list(
       x = 1, y = -0.05,
       xref = "paper", yref = "paper",
-#      text = "Sumber: Sensus Ekonomi 2016, Updating DPA 2023",
+#      text = "Sumber: STPIM 2019, Updating DPA 2023",
       showarrow = FALSE,
       font = list(size = 10)
       )),
@@ -294,26 +292,26 @@ combined_plot_java13
 
 
 # Pakaian Jadi
-plottpt_16_java14 <- ggplot(shp_2016_java) +
-  geom_sf(aes(fill = pakaian, label = Statistik2016)) +
-  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
-#  ggtitle("Sebaran Industri TPT 2016") +
+plottpt_19_java14 <- ggplot(shp_2019_java) +
+  geom_sf(aes(fill = pakaian, label = Statistik2019)) +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2019_java$total_tpt)), name = "") +
+#  ggtitle("Sebaran Industri TPT 2019") +
   theme_void()
 
 plottpt_23_java14 <- ggplot(shp_2023_java) +
   geom_sf(aes(fill = pakaian, label = Statistik2023)) +
-  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2016_java$total_tpt)), name = "") +
-  ggtitle("Sebaran Industri Pakaian Jadi 2016 (atas) dan 2023 (bawah)") +
+  scale_fill_viridis_c(limits = range(c(shp_2023_java$total_tpt, shp_2019_java$total_tpt)), name = "") +
+  ggtitle("Sebaran Industri Pakaian Jadi 2019 (atas) dan 2023 (bawah)") +
   theme_void()
 
 
 combined_plot_java14 <- subplot(
-  ggplotly(plottpt_16_java14, tooltip = "label") %>%
+  ggplotly(plottpt_19_java14, tooltip = "label") %>%
     layout(
     annotations = list(
       x = 1, y = -0.05,
       xref = "paper", yref = "paper",
-      text = "Sumber: Sensus Ekonomi 2016 (atas), Updating DPA 2023 (bawah)",
+      text = "Sumber: STPIM 2019 (atas), Updating DPA 2023 (bawah)",
       showarrow = FALSE,
       font = list(size = 10)
       )),
@@ -322,7 +320,7 @@ combined_plot_java14 <- subplot(
     annotations = list(
       x = 1, y = -0.05,
       xref = "paper", yref = "paper",
-#      text = "Sumber: Sensus Ekonomi 2016, Updating DPA 2023",
+#      text = "Sumber: STPIM 2019, Updating DPA 2023",
       showarrow = FALSE,
       font = list(size = 10)
       )),
