@@ -24,6 +24,7 @@ p {
 library(readxl)
 library(dplyr)
 library(tidyverse)
+library(tidyr)
 
 ### Visualization----------------------------------------------------------
 library(ggplot2)
@@ -500,6 +501,163 @@ ggplot(total_outputstr1_14, aes(x = year, y = value, fill = variable)) +
 
 ```
 
+
+
+
+```{r, warning=FALSE, include=FALSE}
+### Ekspor
+
+
+# Data Ekspor
+e24v <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2024_EXIM/e24t1v.xlsx")
+e23v_1314 <- e24v |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  mutate(V2023 = Vtw123 + Vtw232 + Vtw323 + Vtw423) |>
+  select(Provinsi, Kbli2, Vtw124, V2023) |>
+  rename(V2024 = `Vtw124`)    #2024 only Triwulan I
+
+
+e24q <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2024_EXIM/e24t1q.xlsx")
+e23q_1314 <- e24q |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  mutate(Q2023 = Qtw123 + Qtw232 + Qtw323 + Qtw423) |>
+  select(Provinsi, Kbli2, Qtw124, Q2023) |>
+  rename(Q2024 = `Qtw124`)    #2024 only Triwulan I
+
+e23v <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2023_EXIM/e23t4v.xlsx")
+e22v_1314 <- e23v |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  select(Provinsi, Kbli2, V2022)
+
+e23q <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2023_EXIM/e23t4q.xlsx")
+e22q_1314 <- e23q |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  select(Provinsi, Kbli2, Q2022)
+
+e22v <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2022_EXIM/230123 - Nilai Ekspor TW IV 2022.xlsx")
+e21v_1314 <- e22v |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  rename(V2021 = `2021`) |>
+  select(Provinsi, Kbli2, V2021)
+
+e22q <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2022_EXIM/230123 - Volume Ekspor TW IV 2022.xlsx")
+e21q_1314 <- e22q |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  rename(Q2021 = `2021`) |>
+  select(Provinsi, Kbli2, Q2021)
+
+e21v <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2021_EXIM/260122_Volume Ekspor per Provinsi dan Nasional (sampai tw 4 2021).xlsx", skip = 1)
+e20v_1314 <- e21v |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  rename(V2020 = `2020`) |>
+  select(Provinsi, Kbli2, V2020)
+
+e21q <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2021_EXIM/260122_Nilai Ekspor per Provinsi dan Nasional (sampai tw 4 2021).xlsx", skip = 1)
+e20q_1314 <- e21q |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  rename(Q2020 = `2020`) |>
+  select(Provinsi, Kbli2, Q2020)
+
+e20v <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2020_EXIM/eks20v.xlsx", skip = 1)
+e19v_1314 <- e20v |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  rename(V2019 = `Vtot19`) |>
+  select(Provinsi, Kbli2, V2019)
+
+e20q <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2020_EXIM/eks20q.xlsx", skip = 1)
+e19q_1314 <- e20q |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  rename(Q2019 = `Qtot19`) |>
+  select(Provinsi, Kbli2, Q2019)
+
+e19v <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2019_EXIM/eksporv2019t4.xlsx", skip = 2)
+e18v_1314 <- e19v |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  rename(V2018 = `Vtot18`) |>
+  select(Provinsi, Kbli2, V2018)
+
+e19q <- read_xlsx("D:/##AYUPA DESKTOP 2/DATA INDUSTRI/Eksim/2019_EXIM/eksporq2019t4.xlsx", skip = 2)
+e18q_1314 <- e19q |> 
+  filter(Provinsi == "Indonesia") |>
+  filter(Kbli2 == 13 | Kbli2 == 14) |>
+  rename(Q2018 = `Qtot18`) |>
+  select(Provinsi, Kbli2, Q2018)
+
+
+ekspor <- e23v_1314 %>%
+  full_join(e23q_1314, by = c("Provinsi", "Kbli2")) %>%
+  full_join(e22v_1314, by = c("Provinsi", "Kbli2")) %>%
+  full_join(e22q_1314, by = c("Provinsi", "Kbli2")) %>%
+  full_join(e21v_1314, by = c("Provinsi", "Kbli2")) %>%
+  full_join(e21q_1314, by = c("Provinsi", "Kbli2")) %>%
+  full_join(e20v_1314, by = c("Provinsi", "Kbli2")) %>%
+  full_join(e20q_1314, by = c("Provinsi", "Kbli2")) %>%
+  full_join(e19v_1314, by = c("Provinsi", "Kbli2")) %>%
+  full_join(e19q_1314, by = c("Provinsi", "Kbli2"))
+
+ekspor <- ekspor %>%
+  pivot_longer(
+    cols = starts_with("V") | starts_with("Q"),
+    names_to = c(".value", "year"),
+    names_pattern = "(.)(\\d+)"
+  ) %>%
+  rename(val = V) %>%
+  rename(vol = Q) %>%
+  mutate(year = as.numeric(year)) %>%
+  mutate(val = val / 1000,        # in thousand USD
+         vol = vol / 1000) %>%    # in thousand kg
+  mutate(Kbli_nama = case_when(
+    Kbli2 == 13 ~ "Tekstil",
+    Kbli2 == 14 ~ "Pakaian Jadi"
+  ))
+
+# Add info label
+Statistik <- paste0(
+  "\nTahun: ", ekspor$year,
+  "\nIndustri: ", ekspor$Kbli_nama,
+  "\nNilai (000 USD): ", scales::comma(ekspor$val, big.mark = "."),
+  "\nVolume (000 kg): ", scales::comma(ekspor$vol, big.mark = ".")
+)
+ekspor$Statistik <- Statistik
+
+
+valplot <- ggplot(ekspor, aes(x = year, y = val, color = Kbli_nama)) +
+  geom_line() +
+  geom_point(aes(text = Statistik)) +  
+  labs(title = "Tren Nilai Ekspor, 2019 - Triwulan I 2024",
+       x = "",
+       y = "Export Value in 000 USD",
+       color = "Industri",
+       caption = "Catatan: 2024 hanya sampai triwulan 1 | Sumber: Statistik Ekspor") +
+  theme_pander() +
+  scale_fill_economist() +
+  scale_y_continuous(labels = scales::number_format(scale = 1e-3, big.mark = ".", accuracy = 0.001)) 
+
+
+ggplotly(valplot, tooltip = c("text")) %>%
+  layout(
+    annotations = list(
+      x = 1, y = -0.09,
+      xref = "paper", yref = "paper",
+      text = "Catatan: 2024 hanya sampai triwulan 1 | Sumber: Statistik Ekspor",
+      showarrow = FALSE,
+      font = list(size = 13)
+    ))
+
+```
+
+
 ## Input
 
 ::: {.callout-note appearance="simple"}
@@ -757,4 +915,7 @@ ggplot(input21_prop_14, aes(x = "", y = prop, fill = variable)) +
 #TAMBAHKAN ANALISIS TERKAIT DAMPAK COVID!!! >> Tenaga Kerja 
 
 
+
+
 ```
+
